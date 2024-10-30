@@ -1,3 +1,3 @@
 <template>
-    Product
+  产品
 </template>
