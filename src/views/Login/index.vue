@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-
+import { loginAPI } from '@/apis/user';
+import { ElMessage } from 'element-plus';
+import 'element-plus/theme-chalk/el-message.css'
+import { useRouter } from 'vue-router';
 const form = ref({
   account:'',
   password:'',
@@ -29,11 +32,16 @@ const rules = {
   ]
 }
 const formRef = ref(null)
-const doLogin = ()=>{
-  formRef.value.validator(()=>{
-    console.log(value)
+const router = useRouter()
+const doLogin = ()=> {
+  const {account, password} = form.value
+  formRef.value.validate(async(valid)=>{
+    console.log(valid)
     if(valid){
-      
+      const res = await loginAPI({account,password})
+      console.log(res)
+      ElMessage({type:'success',message:'登录成功'})
+      router.replace({path:'/'})
     }
   })
 }
@@ -62,7 +70,7 @@ const doLogin = ()=>{
         <div class="account-box">
           <div class="form">
             <fl-row></fl-row>
-            <el-form ref = 'formRef' :rules="rules" label-position="right" label-width="60px"
+            <el-form :model="form" ref = 'formRef' :rules="rules" label-position="right" label-width="60px"
               status-icon>
               <el-form-item  prop="account" label="账户">
                 <el-input v-model="form.account"/>
